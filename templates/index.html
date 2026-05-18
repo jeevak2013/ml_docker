@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PredictGrade | Student Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#F1F3F6] h-full overflow-hidden flex flex-col text-slate-900">
+
+    <!-- Header -->
+    <nav class="h-16 border-b border-slate-200 bg-white flex items-center justify-between px-10 flex-none z-50">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-indigo-600 rounded flex items-center justify-center text-white font-bold text-xs shadow-sm">SPA</div>
+            <span class="font-bold tracking-tight text-lg text-slate-800">STUDENT PERFORMANCE ANALYTICS</span>
+        </div>
+        <div class="hidden md:flex items-center gap-8 text-[11px] font-bold text-slate-500 tracking-[0.2em]">
+            <span class="text-indigo-600 border-b-2 border-indigo-600 py-5">PREDICTOR</span>
+            <span class="hover:text-slate-800 cursor-pointer">REPORTS</span>
+            <div class="px-3 py-1 bg-slate-100 rounded-full border border-slate-200 text-[10px] text-emerald-600 flex items-center gap-2">
+                <div class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></div> SYSTEM ACTIVE
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-1 grid grid-cols-1 md:grid-cols-12 gap-0 overflow-hidden">
+        
+        <!-- Left Sidebar: Form -->
+        <aside class="col-span-1 md:col-span-7 bg-white p-8 md:p-12 flex flex-col justify-between overflow-y-auto border-r border-slate-200">
+            <div class="max-w-2xl w-full mx-auto">
+                <div class="mb-10">
+                    <h1 class="text-4xl font-light text-slate-800 tracking-tight">Score <span class="font-black text-indigo-600">Predictor</span></h1>
+                    <p class="text-slate-500 text-sm mt-2 font-medium">Input student metrics to synthesize a mathematical aptitude forecast using AI modeling.</p>
+                </div>
+
+                <form action="{{ url_for('predict_datapoint') }}" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+                    <!-- Section: Identity -->
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block">Student Gender</label>
+                        <select name="gender" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none transition-all" required>
+                        <option value="" {% if not inputs %}selected{% endif %} disabled>Select Gender</option>
+                        <option value="male" {% if inputs and inputs.gender == 'male' %}selected{% endif %}>Male</option>
+                        <option value="female" {% if inputs and inputs.gender == 'female' %}selected{% endif %}>Female</option>
+                    </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block">Race/Ethnicity</label>
+                        <select name="race_ethnicity" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none" required>
+                        <option value="" {% if not inputs %}selected{% endif %} disabled>Select Group</option>
+                        <option value="group A" {% if inputs and inputs.race_ethnicity == 'group A' %}selected{% endif %}>Group A</option>
+                        <option value="group B" {% if inputs and inputs.race_ethnicity == 'group B' %}selected{% endif %}>Group B</option>
+                        <option value="group C" {% if inputs and inputs.race_ethnicity == 'group C' %}selected{% endif %}>Group C</option>
+                        <option value="group D" {% if inputs and inputs.race_ethnicity == 'group D' %}selected{% endif %}>Group D</option>
+                        <option value="group E" {% if inputs and inputs.race_ethnicity == 'group E' %}selected{% endif %}>Group E</option>
+                    </select>
+                    </div>
+
+                    <!-- Section: Background -->
+                    <div class="md:col-span-2 space-y-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block">Parental Education Level</label>
+                        <select name="parental_level_of_education" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none" required>
+                        <option value="" {% if not inputs %}selected{% endif %} disabled>Select Education</option>
+                        <option value="high school" {% if inputs and inputs.parental_level_of_education == 'high school' %}selected{% endif %}>High School</option>
+                        <option value="some high school" {% if inputs and inputs.parental_level_of_education == 'some high school' %}selected{% endif %}>Some High School</option>
+                        <option value="some college" {% if inputs and inputs.parental_level_of_education == 'some college' %}selected{% endif %}>Some College</option>
+                        <option value="associate's degree" {% if inputs and inputs.parental_level_of_education == "associate's degree" %}selected{% endif %}>Associate's Degree</option>
+                        <option value="bachelor's degree" {% if inputs and inputs.parental_level_of_education == "bachelor's degree" %}selected{% endif %}>Bachelor's Degree</option>
+                        <option value="master's degree" {% if inputs and inputs.parental_level_of_education == "master's degree" %}selected{% endif %}>Master's Degree</option>
+                    </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block">Lunch Type</label>
+                        <select name="lunch" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none" required>
+                        <option value="" {% if not inputs %}selected{% endif %} disabled>Select Type</option>
+                        <option value="standard" {% if inputs and inputs.lunch == 'standard' %}selected{% endif %}>Standard</option>
+                        <option value="free/reduced" {% if inputs and inputs.lunch == 'free/reduced' %}selected{% endif %}>Free/Reduced</option>
+                    </select>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block">Test Prep Course</label>
+                        <select name="test_preparation_course" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none" required>
+                        <option value="" {% if not inputs %}selected{% endif %} disabled>Select Status</option>
+                        <option value="none" {% if inputs and inputs.test_preparation_course == 'none' %}selected{% endif %}>None</option>
+                        <option value="completed" {% if inputs and inputs.test_preparation_course == 'completed' %}selected{% endif %}>Completed</option>
+                    </select>
+                    </div>
+
+                    <!-- Section: Current Scores -->
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block">Reading Score (0-100)</label>
+                        <input type="number" name="reading_score" min="0" max="100" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="e.g. 75" value="{{ inputs.reading_score if inputs else '' }}" required>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] block">Writing Score (0-100)</label>
+                        <input type="number" name="writing_score" min="0" max="100" class="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm font-bold focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="e.g. 80" value="{{ inputs.writing_score if inputs else '' }}" required>
+                    </div>
+
+                    <div class="md:col-span-2 pt-6">
+                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-5 rounded-xl shadow-xl transition-all uppercase tracking-widest text-sm">
+                            CALCULATE PROJECTION
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </aside>
+
+        <!-- Right Panel: Results -->
+        <section class="col-span-1 md:col-span-5 bg-slate-50 p-8 md:p-12 flex flex-col items-center justify-center relative overflow-hidden">
+            <!-- Geometric Decoration -->
+            <div class="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none">
+                <div class="w-96 h-96 border-[40px] border-slate-900 rounded-full"></div>
+            </div>
+
+            {% if results %}
+            <div class="w-full max-w-md relative z-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                <div class="bg-white rounded-[2.5rem] p-10 shadow-2xl border border-slate-200 text-center mb-8">
+                    <span class="text-[11px] font-black text-indigo-500 uppercase tracking-[0.3em] block mb-6">Prediction Result</span>
+                    
+                    <div class="mb-8 flex items-baseline justify-center gap-1">
+                        <!-- FIXED: Changed results.math_score to just results since model.pkl returns a single number -->
+                        <span class="text-9xl font-black text-slate-800 tracking-tighter leading-none">{{ results }}</span>
+                        <span class="text-2xl font-bold text-slate-400">/100</span>
+                    </div>
+
+                    <div class="h-1.5 w-24 bg-indigo-600 mx-auto mb-8 rounded-full shadow-sm"></div>
+                    
+                    <h3 class="text-xl font-black text-slate-800 mb-4 uppercase tracking-tight">Projected Math Aptitude</h3>
+                    <!-- FIXED: Replaced Gemini analysis with a static model message -->
+                    <p class="text-slate-500 text-sm leading-relaxed mb-10 font-medium italic">
+                        "Estimated mathematical performance calculated using your workspace machine learning regression models."
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-8 border-t border-slate-100 pt-10">
+                        <div class="text-left space-y-1">
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Model Pipeline</p>
+                            <!-- FIXED: Shows that it uses your local training architecture -->
+                            <p class="font-black text-indigo-600 text-lg">MODEL.PKL</p>
+                        </div>
+                        <div class="text-left space-y-1">
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Analytical Status</p>
+                            <p class="font-black text-slate-800 text-lg">STABLE</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="text-center space-y-6 relative z-10 opacity-40">
+                <div class="w-24 h-24 bg-white rounded-3xl shadow-xl border border-slate-200 flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-10 h-10 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-bold text-slate-400 uppercase tracking-widest">Awaiting Input</h3>
+                <p class="text-slate-400 text-sm max-w-xs mx-auto">Complete the diagnostic form on the left to generate an academic performance projection.</p>
+            </div>
+            {% endif %}
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="h-12 bg-slate-900 text-slate-500 flex items-center justify-between px-10 text-[10px] font-bold tracking-[0.2em] flex-none border-t border-slate-800">
+        <div class="flex gap-10">
+            <div><span class="text-slate-700">ENGINE:</span> FLASK + SCIKIT-LEARN</div>
+            <div><span class="text-slate-700">STATUS:</span> OPERATIONAL</div>
+        </div>
+        <div class="opacity-50">© 2024 EDU-METRICS ANALYTICA PRO</div>
+    </footer>
+
+</body>
+</html>
