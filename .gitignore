@@ -216,3 +216,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Exclude AWS Elastic Beanstalk configurations for the new repo
+.ebextensions/

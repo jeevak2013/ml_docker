@@ -58,5 +58,6 @@ def predict_datapoint():
         raise CustomException(e, sys)
 
 if __name__ == "__main__":
-    # Launching local Flask production server on Port 5000
-    app.run(host='0.0.0.0', port=5000)
+    # for docker and ecr deployment, we need to listen on all interfaces and use the port 8080
+    application.run(host='0.0.0.0', port=8080, debug=True)
+
