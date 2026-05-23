@@ -1,100 +1,115 @@
-# Student Performance Analytics (SPA) End-to-End ML Pipeline
+# Student Math Score Prediction - End-to-End MLOps Pipeline
 
-[![Python Version](https://shields.io)](https://python.org)
-[![Framework](https://shields.io)](https://palletsprojects.com)
-[![ML Stack](https://shields.io)](https://scikit-learn.org)
-[![Status](https://shields.io)]()
+This repository contains an end-to-end Machine Learning Regression project that predicts student mathematics scores (0-100) based on demographic attributes and academic performance indicators. The project bypasses standard high-overhead PaaS environments in favor of a robust, lightweight, and custom modern containerized MLOps architecture.
 
-An enterprise-grade, modular Machine Learning pipeline that predicts a student's mathematical aptitude based on demographic profiles and historical testing data. This application features an isolated, reusable continuous retraining pipeline (`train_pipeline.py`) alongside an optimized inference layer wrapped inside a premium, low-latency Tailwind CSS web interface.
+## 🚀 Architecture & Tech Stack
+
+- **Machine Learning:** Python 3.10, Scikit-Learn, CatBoost, XGBoost, Pandas, NumPy
+- **Web Framework:** Flask (Running on Custom Port `8080` internally, mapped to standard Port `80`)
+- **Containerization:** Docker (Slim-debian base footprint optimized for ML wheels)
+- **CI/CD Automation:** GitHub Actions (Fully automated Integration, Delivery, and Deployment workflows)
+- **Cloud Infrastructure (AWS):** 
+  - **AWS IAM:** Custom fine-grained programmatic access security
+  - **AWS ECR (Elastic Container Registry):** Private Docker container image hosting
+  - **AWS EC2 (Ubuntu 22.04 LTS):** Dedicated compute engine host hosting our production container instance
+  - **GitHub Self-Hosted Runner:** Continuous deployment connector running natively inside the compute node
 
 ---
 
-## 🛠️ System Architecture
-
-The repository enforces clean **Modular Coding Practices**, completely decoupling the data plane, compute logic, and presentation layers:
+## 📁 Repository File Structure
 
 ```text
-ml_proj/
-├── .venv/                      # Isolated virtual runtime environment (ignored)
-├── artifacts/                  # Core pipeline serialization directory
-│   ├── data.csv                # Raw baseline snapshot
-│   ├── train.csv / test.csv    # Evaluated stratified datasets
-│   ├── preprocessor.pkl        # Serialized pipeline ColumnTransformer
-│   └── model.pkl               # Winning champion regression model
-├── logs/                       # System state logs runtime directory
-├── notebook/                   # Research and EDA scratchpad workspace
-├── src/                        # Monolithic source package root
-│   ├── __init__.py
-│   ├── exception.py            # Global execution system traceback formatter
-│   ├── logger.py               # Absolute execution step runtime tracking system
-│   ├── utils.py               # Serialization helpers & GridSearch engines
-│   ├── components/             # Atomic pipeline modules
-│   │   ├── __init__.py
-│   │   ├── data_ingestion.py   # Ingests source artifacts and executes splits
-│   │   ├── data_transformation.py # Preprocessing, scaling, & encoding layer
-│   │   └── model_trainer.py    # Cross-validated model evaluation engine
-│   └── pipeline/               # Workflow execution run controllers
-│       ├── __init__.py
-│       ├── train_pipeline.py   # Continuous training pipeline wrapper
-│       └── predict_pipeline.py # Production inference abstraction layer
-├── templates/                  # Frontend UI layout container
-│   └── index.html              # Reactive Tailwind CSS user interface
-├── app.py                      # Production WSGI/Flask gateway controller
-├── requirements.txt            # System dependency tracking registry
-└── setup.py                    # Package build config tool
+D:\mlprojects\ml_proj\
+├── .github/
+│   └── workflows/
+│       └── main.yaml          # Automated CI/CD execution workflow file
+├── src/                       # Central pipeline source code directory
+│   ├── components/            # Data Ingestion, Data Transformation, Model Trainer
+│   ├── pipeline/              # Training & Prediction execution flows
+│   ├── exception.py           # Production-ready custom execution trace logging
+│   └── logger.py              # Structured execution history logs
+├── templates/                 # Production Flask user interface containers
+│   └── index.html             # User input form and score prediction layout
+├── application.py             # Core Flask application entrypoint
+├── Dockerfile                 # Multi-layered optimized docker environment build file
+├── requirements.txt           # Explicit third-party application modules
+└── README.md                  # System operation baseline documentation
 ```
 
 ---
 
-## 🚀 Installation & Local Environment Setup
+## 🛠️ Local System Development Setup
 
-Follow these steps to establish a clean execution context inside your terminal workspace:
+To run and debug this production-ready application pipeline on your local architecture, follow the steps below:
 
-### 1. Replicate the Workspace Environment
+### 1. Environment Setup
 ```bash
+# Clone the repository
 git clone https://github.com
 cd ml_proj
+
+# Create a virtual isolated ecosystem
+python -m venv venv
+source venv/Scripts/activate  # On Windows Windows PowerShell / Command Prompt
 ```
 
-### 2. Provision and Activate Runtime Sandbox
-```cmd
-python -m venv .venv
-.venv\Scripts\activate
-```
-
-### 3. Bootstrap Dependencies & Local Packages
-Executing this command automatically installs your underlying frameworks and executes `setup.py` to link the internal source packages:
+### 2. Dependency Installation
 ```bash
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
----
-
-## 🔄 Execution Workflows
-
-### Continuous Retraining Routine
-To re-ingest fresh source data, execute automated stratified data splits, tune hyperparameters via cross-validated grid searching (`cv=5`), and automatically archive the champion scoring model weights, trigger the master training pipeline:
+### 3. Execution Integration Test
 ```bash
-python src/pipeline/train_pipeline.py
+python application.py
 ```
-
-### Serve Local Inference Gateway
-To initialize the production-ready HTTP server gateway instance and expose the user interface components locally on Port 5000:
-```bash
-python app.py
-```
-Open your preferred web browser window and manually target your navigation address bar container to: **`http://127.0.0`**
+Open your local web interface at `http://localhost:8080` to interact with the model dashboard.
 
 ---
 
-## 📈 ML Stack Specifications
-The `ModelTrainer` script concurrently trains, validates, and ranks the following foundational regression models to establish the elite performance threshold:
-* **Random Forest Regressor**
-* **Decision Tree Regressor**
-* **Gradient Boosting Regressor**
-* **Linear Regression**
-* **XGBRegressor**
-* **CatBoost Regressor** (Champion Algorithm)
-* **AdaBoost Regressor**
+## 🐳 Docker Container Local Build
 
-All modeling metrics, trace paths, and exceptions are strictly parsed via the unified global logging workspace and stored safely inside timestamped log files.
+To run the unified environment container exactly like the production cluster node does:
+
+```bash
+# Build the application bundle image
+docker build -t student-score-predictor:latest .
+
+# Instantiate the container and run on target network bridge
+docker run -p 8080:8080 student-score-predictor:latest
+```
+
+---
+
+## ☁️ Continuous Deployment Flow (GitHub Actions to AWS)
+
+The repository workflow automatically coordinates code delivery upon every secure structural update pushed onto the `main` branch.
+
+[ Local Push ] ──> [ CI: Code Linting & Tests ] ──> [ CD: Build & Push Image to AWS ECR ] ──> [ CD: Run on Hosted AWS EC2 ]
+
+### Required Secure Environment Variables (GitHub Secrets)
+To enable the automated continuous pipeline execution suite, the following repository secrets must be explicitly injected inside **Settings -> Secrets and variables -> Actions**:
+
+- `AWS_ACCESS_KEY_ID`: Highly secure service account deployment key ID.
+- `AWS_SECRET_ACCESS_KEY`: Cryptographic execution authorization secret key signature.
+- `AWS_REGION`: Target host regional identifier (e.g., `us-east-1`).
+- `ECR_REPOSITORY_NAME`: Target hosting storage engine registry context (`student-score-predictor`).
+- `AWS_ECR_LOGIN_URI`: Remote docker authorization container endpoint registry target (`<aws_account_id>.dkr.ecr.<region>.amazonaws.com`).
+
+### Production Runner Node Integration
+The operational server operates within an enterprise isolation mode using a native background service framework daemon:
+```bash
+cd ~/actions-runner
+sudo ./svc.sh install
+sudo ./svc.sh start
+```
+
+---
+
+## 🌐 Production Release Endpoint
+
+The target project is fully live and highly responsive across global public network requests via its open HTTP interface routing model:
+
+👉 **Production Host Web Routing Link:** `http://13.220.46`
+
+*Note: Production web traffic ingress mapping relies directly on global unified binding rules natively translating external HTTP standard Web Port `80` queries cleanly straight down inside isolation container framework server Port `8080` transparently.*
